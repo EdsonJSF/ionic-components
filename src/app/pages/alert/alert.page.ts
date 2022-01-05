@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-alert',
@@ -6,10 +7,113 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./alert.page.scss'],
 })
 export class AlertPage implements OnInit {
+  constructor(private alertController: AlertController) {}
 
-  constructor() { }
+  ngOnInit() {}
 
-  ngOnInit() {
+  async presentAlert() {
+    const alert = await this.alertController.create({
+      header: 'Alert',
+      subHeader: 'Subtitle',
+      message: 'This is an alert message.',
+      buttons: ['OK'],
+      backdropDismiss: false,
+    });
+
+    await alert.present();
+
+    const { role } = await alert.onDidDismiss();
+    console.log('onDidDismiss resolved with role', role);
   }
 
+  async presentAlertMultipleButtons() {
+    const alert = await this.alertController.create({
+      header: 'Alert Multiple Buttons',
+      subHeader: 'Subtitle',
+      message: 'This is an alert message.',
+      buttons: [
+        {
+          text: 'OK',
+          handler: () => {
+            console.log('OK');
+          },
+        },
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'color-red',
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
+  async presentAlertPrompt() {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Prompt!',
+      inputs: [
+        {
+          name: 'name1',
+          type: 'text',
+          id: 'name1-id',
+          value: 'hello',
+          placeholder: 'Placeholder 2',
+        },
+        {
+          name: 'paragraph',
+          id: 'paragraph',
+          type: 'textarea',
+          placeholder: 'Placeholder 3',
+        },
+        {
+          name: 'name2',
+          value: 'http://ionicframework.com',
+          type: 'url',
+          placeholder: 'Favorite site ever',
+        },
+        {
+          name: 'name3',
+          type: 'date',
+          min: '2017-03-01',
+          max: '2018-01-12',
+        },
+        {
+          name: 'name4',
+          type: 'number',
+          min: -5,
+          max: 10,
+        },
+        {
+          name: 'name5',
+          type: 'password',
+          placeholder: 'Advanced Attributes',
+          cssClass: 'specialClass',
+          attributes: {
+            maxlength: 4,
+            inputmode: 'decimal',
+          },
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Confirm Cancel');
+          },
+        },
+        {
+          text: 'Ok',
+          handler: (data: any) => {
+            console.log(data);
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
 }
